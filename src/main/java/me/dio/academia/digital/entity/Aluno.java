@@ -18,6 +18,6 @@ public class Aluno {
     private String cpf;
     private String bairro;
     private LocalDate dataDeNascimento;
-    private List<String> avaliacoes = new ArrayList<>();
+    private List<AvaliacaoFisica> avaliacoes = new ArrayList<>();
 
 }

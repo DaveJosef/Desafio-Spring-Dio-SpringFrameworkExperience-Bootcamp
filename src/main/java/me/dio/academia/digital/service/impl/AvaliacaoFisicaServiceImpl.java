@@ -2,7 +2,7 @@ package me.dio.academia.digital.service.impl;
 
 import me.dio.academia.digital.entity.Aluno;
 import me.dio.academia.digital.entity.AvaliacaoFisica;
-import me.dio.academia.digital.service.IAlunoService;
+import me.dio.academia.digital.service.IAvaliacaoFisicaService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -10,26 +10,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class AlunoServiceImpl implements IAlunoService {
+public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
     @Override
-    public Aluno create() {
+    public AvaliacaoFisica create() {
+        AvaliacaoFisica avaliacaoFisica = new AvaliacaoFisica();
+
         Aluno aluno = new Aluno();
         aluno.setNome("David");
         aluno.setCpf("111.111.111-09");
         aluno.setBairro("Bairro Jardim das Flores");
         aluno.setDataDeNascimento(LocalDate.of(2002, 01, 03));
 
-        return aluno;
+        avaliacaoFisica.setAluno(aluno);
+        avaliacaoFisica.setPeso(54);
+        avaliacaoFisica.setAltura(1.8);
+
+        return avaliacaoFisica;
     }
 
     @Override
-    public Aluno get(Long id) {
+    public AvaliacaoFisica get(Long id) {
         return null;
     }
 
     @Override
-    public List<Aluno> getAll() {
+    public List<AvaliacaoFisica> getAll() {
         AvaliacaoFisica avaliacaoA = new AvaliacaoFisica();
         avaliacaoA.setPeso(54);
         avaliacaoA.setAltura(1.8);
@@ -42,34 +48,16 @@ public class AlunoServiceImpl implements IAlunoService {
             add(avaliacaoB);
         }};
 
-        Aluno alunoJoao = new Aluno(1L, "Joao", "111.111.111-09", "Bairro Jardim das Flores", LocalDate.of(2002, 01, 03), avaliacoes);
-        Aluno alunoMaria = new Aluno(2L, "Maria", "111.111.111-10", "Bairro Jardim das Flores", LocalDate.of(2002, 01, 04), avaliacoes);
-        List<Aluno> alunos = new ArrayList(){{
-            add(alunoJoao);
-            add(alunoMaria);
-        }};
-
-        return alunos;
+        return avaliacoes;
     }
 
     @Override
-    public Aluno update() {
+    public AvaliacaoFisica update() {
         return null;
     }
 
     @Override
     public void delete(Long id) {
 
-    }
-
-    @Override
-    public List<String> getAllAvaliacaoFisicaId() {
-
-        List<String> avaliacoes = new ArrayList(){{
-            add("AvaliacaoA");
-            add("AvaliacaoB");
-        }};
-
-        return avaliacoes;
     }
 }
