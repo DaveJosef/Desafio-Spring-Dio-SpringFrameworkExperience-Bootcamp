@@ -4,25 +4,32 @@ import me.dio.academia.digital.entity.Aluno;
 import me.dio.academia.digital.entity.AvaliacaoFisica;
 import me.dio.academia.digital.entity.form.AlunoForm;
 import me.dio.academia.digital.entity.form.AlunoUpdateForm;
+import me.dio.academia.digital.infra.utils.JavaTimeUtils;
+import me.dio.academia.digital.repository.AlunoRepositoy;
 import me.dio.academia.digital.service.IAlunoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlunoServiceImpl implements IAlunoService {
 
+    @Autowired
+    private AlunoRepositoy repositoy;
+
     @Override
     public Aluno create(AlunoForm form) {
         Aluno aluno = new Aluno();
-        aluno.setNome("David");
-        aluno.setCpf("111.111.111-09");
-        aluno.setBairro("Bairro Jardim das Flores");
-        aluno.setDataDeNascimento(LocalDate.of(2002, 01, 03));
+        aluno.setNome(form.getNome());
+        aluno.setCpf(form.getCpf());
+        aluno.setBairro(form.getBairro());
+        aluno.setDataDeNascimento(form.getDataDeNascimento());
 
-        return aluno;
+        return repositoy.save(aluno);
     }
 
     @Override
@@ -31,27 +38,15 @@ public class AlunoServiceImpl implements IAlunoService {
     }
 
     @Override
-    public List<Aluno> getAll() {
-        AvaliacaoFisica avaliacaoA = new AvaliacaoFisica();
-        avaliacaoA.setPeso(54);
-        avaliacaoA.setAltura(1.8);
-        AvaliacaoFisica avaliacaoB = new AvaliacaoFisica();
-        avaliacaoB.setPeso(54);
-        avaliacaoB.setAltura(1.8);
+    public List<Aluno> getAll(String dataDeNascimento) {
 
-        List<AvaliacaoFisica> avaliacoes = new ArrayList(){{
-            add(avaliacaoA);
-            add(avaliacaoB);
-        }};
+        if (dataDeNascimento == null) {
+            return repositoy.findAll();
+        } else {
+            LocalDate localDate = LocalDate.parse(dataDeNascimento, JavaTimeUtils.LOCAL_DATE_FORMATTER);
+            return repositoy.findByDataDeNascimento(localDate);
+        }
 
-        Aluno alunoJoao = new Aluno(1L, "Joao", "111.111.111-09", "Bairro Jardim das Flores", LocalDate.of(2002, 01, 03), avaliacoes);
-        Aluno alunoMaria = new Aluno(2L, "Maria", "111.111.111-10", "Bairro Jardim das Flores", LocalDate.of(2002, 01, 04), avaliacoes);
-        List<Aluno> alunos = new ArrayList(){{
-            add(alunoJoao);
-            add(alunoMaria);
-        }};
-
-        return alunos;
     }
 
     @Override
@@ -67,18 +62,11 @@ public class AlunoServiceImpl implements IAlunoService {
     @Override
     public List<AvaliacaoFisica> getAllAvaliacaoFisicaId(Long id) {
 
-        AvaliacaoFisica avaliacaoA = new AvaliacaoFisica();
-        avaliacaoA.setPeso(54);
-        avaliacaoA.setAltura(1.8);
-        AvaliacaoFisica avaliacaoB = new AvaliacaoFisica();
-        avaliacaoB.setPeso(54);
-        avaliacaoB.setAltura(1.8);
+        Optional<Aluno> alunoOptional = repositoy.findById(id);
+        if (alunoOptional.isPresent()) {
+            return alunoOptional.get().getAvaliacoes();
+        }
+        return Collections.EMPTY_LIST;
 
-        List<AvaliacaoFisica> avaliacoes = new ArrayList(){{
-            add(avaliacaoA);
-            add(avaliacaoB);
-        }};
-
-        return avaliacoes;
     }
 }

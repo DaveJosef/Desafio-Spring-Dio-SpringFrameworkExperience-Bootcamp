@@ -29,6 +29,6 @@ public class AlunoController {
 
     @GetMapping
     public List<Aluno> getAll(@RequestParam(value = "dataDeNascimento", required = false) String dataDeNascimento) {
-        return service.getAll();
+        return service.getAll(dataDeNascimento);
     }
 }

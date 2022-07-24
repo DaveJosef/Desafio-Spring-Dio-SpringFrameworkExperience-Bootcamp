@@ -4,31 +4,32 @@ import me.dio.academia.digital.entity.Aluno;
 import me.dio.academia.digital.entity.AvaliacaoFisica;
 import me.dio.academia.digital.entity.form.AvaliacaoFisicaForm;
 import me.dio.academia.digital.entity.form.AvaliacaoFisicaUpdateForm;
+import me.dio.academia.digital.repository.AlunoRepositoy;
+import me.dio.academia.digital.repository.AvaliacaoFisicaRepository;
 import me.dio.academia.digital.service.IAvaliacaoFisicaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
+    @Autowired
+    private AvaliacaoFisicaRepository avaliacaoFisicaRepository;
+    @Autowired
+    private AlunoRepositoy alunoRepositoy;
+
     @Override
     public AvaliacaoFisica create(AvaliacaoFisicaForm form) {
         AvaliacaoFisica avaliacaoFisica = new AvaliacaoFisica();
-
-        Aluno aluno = new Aluno();
-        aluno.setNome("David");
-        aluno.setCpf("111.111.111-09");
-        aluno.setBairro("Bairro Jardim das Flores");
-        aluno.setDataDeNascimento(LocalDate.of(2002, 01, 03));
+        Aluno aluno = alunoRepositoy.findById(form.getAlunoId()).get();
 
         avaliacaoFisica.setAluno(aluno);
-        avaliacaoFisica.setPeso(54);
-        avaliacaoFisica.setAltura(1.8);
+        avaliacaoFisica.setPeso(form.getPeso());
+        avaliacaoFisica.setAltura(form.getAltura());
 
-        return avaliacaoFisica;
+        return avaliacaoFisicaRepository.save(avaliacaoFisica);
     }
 
     @Override
@@ -38,19 +39,8 @@ public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
     @Override
     public List<AvaliacaoFisica> getAll() {
-        AvaliacaoFisica avaliacaoA = new AvaliacaoFisica();
-        avaliacaoA.setPeso(54);
-        avaliacaoA.setAltura(1.8);
-        AvaliacaoFisica avaliacaoB = new AvaliacaoFisica();
-        avaliacaoB.setPeso(54);
-        avaliacaoB.setAltura(1.8);
 
-        List<AvaliacaoFisica> avaliacoes = new ArrayList(){{
-            add(avaliacaoA);
-            add(avaliacaoB);
-        }};
-
-        return avaliacoes;
+        return avaliacaoFisicaRepository.findAll();
     }
 
     @Override

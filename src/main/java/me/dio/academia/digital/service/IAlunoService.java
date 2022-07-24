@@ -10,27 +10,27 @@ import java.util.List;
 public interface IAlunoService {
 
     /**
-     * Cria um aluno.
+     * Cria um aluno e o salva no Banco de Dados.
      * @param form formulário referente aos dados para criação de um aluno.
      * @return Aluno recém-criado.
      * */
     Aluno create(AlunoForm form);
 
     /**
-     * Retorna um aluno salvo no banco de dados pelo seu id.
+     * Retorna um aluno salvo no Banco de Dados pelo seu id.
      * @param id id do aluno que será exibido.
      * @return Aluno de acordo com o id fornecido.
      * */
     Aluno get(Long id);
 
     /**
-     * Retorna os alunos.
+     * Retorna os alunos salvos no Banco de Dados.
      * @return Uma lista de alunos.
      * */
-    List<Aluno> getAll();
+    List<Aluno> getAll(String dataDeNascimento);
 
     /**
-     * Atualiza o aluno.
+     * Atualiza o aluno no Banco de Dados.
      * @param id id do aluno que será atualizado.
      * @param formUpdate formulário referente aos dados para atualização do aluno.
      * @return Aluno recém-atualizado.
@@ -38,13 +38,13 @@ public interface IAlunoService {
     Aluno update(Long id, AlunoUpdateForm formUpdate);
 
     /**
-     * Deleta um aluno específico.
+     * Deleta um aluno específico no Banco de Dados.
      * @param id id do aluno que será removido.
      * */
     void delete(Long id);
 
     /**
-     * @param id id do aluno do qual será recuperada a lista de avaliações.
+     * @param id id do aluno no Banco de Dados do qual será recuperada a lista de avaliações.
      * @return Uma lista com todas as avaliações do aluno.
      * */
     List<AvaliacaoFisica> getAllAvaliacaoFisicaId(Long id);
