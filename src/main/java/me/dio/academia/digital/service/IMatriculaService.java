@@ -1,6 +1,7 @@
 package me.dio.academia.digital.service;
 
 import me.dio.academia.digital.entity.Matricula;
+import me.dio.academia.digital.entity.form.MatriculaForm;
 
 import java.util.List;
 
@@ -8,9 +9,10 @@ public interface IMatriculaService {
 
     /**
      * Cria uma matrícula.
+     * @param form - formulário referente aos dados necessários para a criação da matrícula.
      * @return - matrícula recém criada.
      * */
-    Matricula create();
+    Matricula create(MatriculaForm form);
 
     /**
      * Retorna uma matrícula que está salva de acordo com o seu id.

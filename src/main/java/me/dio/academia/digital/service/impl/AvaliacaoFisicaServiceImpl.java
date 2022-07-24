@@ -2,6 +2,8 @@ package me.dio.academia.digital.service.impl;
 
 import me.dio.academia.digital.entity.Aluno;
 import me.dio.academia.digital.entity.AvaliacaoFisica;
+import me.dio.academia.digital.entity.form.AvaliacaoFisicaForm;
+import me.dio.academia.digital.entity.form.AvaliacaoFisicaUpdateForm;
 import me.dio.academia.digital.service.IAvaliacaoFisicaService;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,7 @@ import java.util.List;
 public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
     @Override
-    public AvaliacaoFisica create() {
+    public AvaliacaoFisica create(AvaliacaoFisicaForm form) {
         AvaliacaoFisica avaliacaoFisica = new AvaliacaoFisica();
 
         Aluno aluno = new Aluno();
@@ -52,7 +54,7 @@ public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
     }
 
     @Override
-    public AvaliacaoFisica update() {
+    public AvaliacaoFisica update(Long id, AvaliacaoFisicaUpdateForm formUpdate) {
         return null;
     }
 
