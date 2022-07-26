@@ -19,7 +19,7 @@ public interface IMatriculaService {
      * @param id - id da matrícula que será exibida.
      * @return - matrícula de acordo com o id fornecido.
      * */
-    Matricula get(Long id);
+    Matricula get(Long id) throws Throwable;
 
     /**
      * Retorna todas as matrículas que estão salvas no Banco de Dados.
@@ -29,7 +29,7 @@ public interface IMatriculaService {
 
     /**
      * Deleta uma matrícula específica no Banco de Dados.
-     * @return - id da matrícula que será removida.
+     * @param id - id da matrícula que será removida.
      * */
     void delete(Long id);
 

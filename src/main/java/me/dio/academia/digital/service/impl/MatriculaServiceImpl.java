@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Service
 public class MatriculaServiceImpl implements IMatriculaService {
@@ -31,9 +32,9 @@ public class MatriculaServiceImpl implements IMatriculaService {
     }
 
     @Override
-    public Matricula get(Long id) {
+    public Matricula get(Long id) throws Throwable {
 
-        return matriculaRepository.findById(id).get();
+        return matriculaRepository.findById(id).orElseThrow((Supplier<Throwable>) () -> new Exception("Matricula not found :/"));
     }
 
     @Override

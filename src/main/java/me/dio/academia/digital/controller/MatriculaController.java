@@ -21,6 +21,11 @@ public class MatriculaController {
         return service.create(form);
     }
 
+    @GetMapping("/{id}")
+    public Matricula get(@PathVariable Long id) throws Throwable {
+        return service.get(id);
+    }
+
     @GetMapping
     public List<Matricula> getAll(@RequestParam(value = "bairro", required = false) String bairro) {
         return service.getAll(bairro);
