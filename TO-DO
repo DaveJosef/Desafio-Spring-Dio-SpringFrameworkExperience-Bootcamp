@@ -1,0 +1,13 @@
+(V)controller de aluno;
+(V)controller de matricula;
+(V)controller de avaliacoes;
+(V)forms;
+(V)postgres;
+(V)completar CRUD;
+exceptions:
+    AlunoNotFoundException;
+    AvaliacaoNotFoundException;
+    MatriculaNotFoundException;
+DTOs:
+    AlunoDTO;
+    AvaliacaoDTO;
