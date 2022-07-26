@@ -35,6 +35,11 @@ public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
     @Override
     public AvaliacaoFisica get(Long id) {
+        Optional<AvaliacaoFisica> avaliacaoNoBD = avaliacaoFisicaRepository.findById(id);
+        if (avaliacaoNoBD.isPresent()) {
+
+            return avaliacaoNoBD.get();
+        }
         return null;
     }
 
@@ -46,6 +51,16 @@ public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
     @Override
     public AvaliacaoFisica update(Long id, AvaliacaoFisicaUpdateForm formUpdate) {
+        Optional<AvaliacaoFisica> avaliacaoNoBD = avaliacaoFisicaRepository.findById(id);
+        if (avaliacaoNoBD.isPresent()) {
+            AvaliacaoFisica avaliacao = avaliacaoNoBD.get();
+            if (formUpdate.getAltura() != 0)
+                avaliacao.setAltura(formUpdate.getAltura());
+            if (formUpdate.getPeso() != 0)
+                avaliacao.setPeso(formUpdate.getPeso());
+
+            return avaliacaoFisicaRepository.save(avaliacao);
+        }
         return null;
     }
 
