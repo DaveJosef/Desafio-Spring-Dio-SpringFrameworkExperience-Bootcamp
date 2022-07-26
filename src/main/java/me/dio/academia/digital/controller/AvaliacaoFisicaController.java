@@ -3,6 +3,8 @@ package me.dio.academia.digital.controller;
 import me.dio.academia.digital.entity.AvaliacaoFisica;
 import me.dio.academia.digital.entity.form.AvaliacaoFisicaForm;
 import me.dio.academia.digital.entity.form.AvaliacaoFisicaUpdateForm;
+import me.dio.academia.digital.exception.AlunoNotFoundException;
+import me.dio.academia.digital.exception.AvaliacaoNotFoundException;
 import me.dio.academia.digital.service.impl.AvaliacaoFisicaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,27 +20,27 @@ public class AvaliacaoFisicaController {
     private AvaliacaoFisicaServiceImpl service;
 
     @PostMapping
-    public AvaliacaoFisica create(@RequestBody AvaliacaoFisicaForm form) {
+    public AvaliacaoFisicaForm create(@RequestBody AvaliacaoFisicaForm form) throws AlunoNotFoundException {
         return service.create(form);
     }
 
     @GetMapping("/{id}")
-    public AvaliacaoFisica get(@PathVariable Long id) {
+    public AvaliacaoFisicaForm get(@PathVariable Long id) throws AvaliacaoNotFoundException {
         return service.get(id);
     }
 
     @GetMapping
-    public List<AvaliacaoFisica> getAll() {
+    public List<AvaliacaoFisicaForm> getAll() {
         return service.getAll();
     }
 
     @PatchMapping("/{id}")
-    public AvaliacaoFisica update(@PathVariable Long id, @Valid @RequestBody AvaliacaoFisicaUpdateForm updateForm) {
+    public AvaliacaoFisicaForm update(@PathVariable Long id, @Valid @RequestBody AvaliacaoFisicaUpdateForm updateForm) throws AvaliacaoNotFoundException {
         return service.update(id, updateForm);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws AvaliacaoNotFoundException {
         service.delete(id);
     }
 }

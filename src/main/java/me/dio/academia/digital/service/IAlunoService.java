@@ -1,10 +1,11 @@
 package me.dio.academia.digital.service;
 
-import me.dio.academia.digital.entity.Aluno;
-import me.dio.academia.digital.entity.AvaliacaoFisica;
-import me.dio.academia.digital.entity.Matricula;
 import me.dio.academia.digital.entity.form.AlunoForm;
 import me.dio.academia.digital.entity.form.AlunoUpdateForm;
+import me.dio.academia.digital.entity.form.AvaliacaoFisicaForm;
+import me.dio.academia.digital.entity.form.MatriculaForm;
+import me.dio.academia.digital.exception.AlunoNotFoundException;
+import me.dio.academia.digital.exception.CPFAlreadyExistsException;
 
 import java.util.List;
 
@@ -15,20 +16,20 @@ public interface IAlunoService {
      * @param form formulário referente aos dados para criação de um aluno.
      * @return Aluno recém-criado.
      * */
-    Aluno create(AlunoForm form);
+    AlunoForm create(AlunoForm form) throws CPFAlreadyExistsException;
 
     /**
      * Retorna um aluno salvo no Banco de Dados pelo seu id.
      * @param id id do aluno que será exibido.
      * @return Aluno de acordo com o id fornecido.
      * */
-    Aluno get(Long id);
+    AlunoForm get(Long id) throws AlunoNotFoundException;
 
     /**
      * Retorna os alunos salvos no Banco de Dados.
      * @return Uma lista de alunos.
      * */
-    List<Aluno> getAll(String dataDeNascimento);
+    List<AlunoForm> getAll(String dataDeNascimento);
 
     /**
      * Atualiza o aluno no Banco de Dados.
@@ -36,19 +37,19 @@ public interface IAlunoService {
      * @param formUpdate formulário referente aos dados para atualização do aluno.
      * @return Aluno recém-atualizado.
      * */
-    Aluno update(Long id, AlunoUpdateForm formUpdate);
+    AlunoForm update(Long id, AlunoUpdateForm formUpdate) throws AlunoNotFoundException;
 
     /**
      * Deleta um aluno específico no Banco de Dados.
      * @param id id do aluno que será removido.
      * */
-    void delete(Long id) throws Exception;
+    void delete(Long id) throws AlunoNotFoundException;
 
     /**
      * @param id id do aluno no Banco de Dados do qual será recuperada a lista de avaliações.
      * @return Uma lista com todas as avaliações do aluno.
      * */
-    List<AvaliacaoFisica> getAllAvaliacaoFisicaId(Long id) throws Exception;
+    List<AvaliacaoFisicaForm> getAllAvaliacaoFisicaId(Long id) throws Exception;
 
-    Matricula getMatriculaId(Long id) throws Exception;
+    List<MatriculaForm> getMatriculaId(Long id) throws Exception;
 }

@@ -2,6 +2,9 @@ package me.dio.academia.digital.controller;
 
 import me.dio.academia.digital.entity.Matricula;
 import me.dio.academia.digital.entity.form.MatriculaForm;
+import me.dio.academia.digital.exception.AlunoAlreadyHasMatriculaException;
+import me.dio.academia.digital.exception.AlunoNotFoundException;
+import me.dio.academia.digital.exception.MatriculaNotFoundException;
 import me.dio.academia.digital.service.impl.MatriculaServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,22 +20,22 @@ public class MatriculaController {
     private MatriculaServiceImpl service;
 
     @PostMapping
-    public Matricula create(@Valid @RequestBody MatriculaForm form) {
+    public MatriculaForm create(@Valid @RequestBody MatriculaForm form) throws AlunoNotFoundException, AlunoAlreadyHasMatriculaException {
         return service.create(form);
     }
 
     @GetMapping("/{id}")
-    public Matricula get(@PathVariable Long id) throws Throwable {
+    public MatriculaForm get(@PathVariable Long id) throws MatriculaNotFoundException {
         return service.get(id);
     }
 
     @GetMapping
-    public List<Matricula> getAll(@RequestParam(value = "bairro", required = false) String bairro) {
+    public List<MatriculaForm> getAll(@RequestParam(value = "bairro", required = false) String bairro) {
         return service.getAll(bairro);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) throws MatriculaNotFoundException {
         service.delete(id);
     }
 }

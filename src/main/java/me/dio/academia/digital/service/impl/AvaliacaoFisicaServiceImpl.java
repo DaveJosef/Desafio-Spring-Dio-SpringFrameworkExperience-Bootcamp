@@ -1,9 +1,13 @@
 package me.dio.academia.digital.service.impl;
 
+import lombok.AllArgsConstructor;
 import me.dio.academia.digital.entity.Aluno;
 import me.dio.academia.digital.entity.AvaliacaoFisica;
 import me.dio.academia.digital.entity.form.AvaliacaoFisicaForm;
 import me.dio.academia.digital.entity.form.AvaliacaoFisicaUpdateForm;
+import me.dio.academia.digital.exception.AlunoNotFoundException;
+import me.dio.academia.digital.exception.AvaliacaoNotFoundException;
+import me.dio.academia.digital.mapper.AvaliacaoMapper;
 import me.dio.academia.digital.repository.AlunoRepositoy;
 import me.dio.academia.digital.repository.AvaliacaoFisicaRepository;
 import me.dio.academia.digital.service.IAvaliacaoFisicaService;
@@ -11,64 +15,66 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
-    @Autowired
-    private AvaliacaoFisicaRepository avaliacaoFisicaRepository;
-    @Autowired
-    private AlunoRepositoy alunoRepositoy;
+    private final AvaliacaoFisicaRepository avaliacaoFisicaRepository;
+    private final AlunoRepositoy alunoRepositoy;
+    private final AvaliacaoMapper avaliacaoMapper = AvaliacaoMapper.INSTANCE;
 
     @Override
-    public AvaliacaoFisica create(AvaliacaoFisicaForm form) {
-        AvaliacaoFisica avaliacaoFisica = new AvaliacaoFisica();
-        Aluno aluno = alunoRepositoy.findById(form.getAlunoId()).get();
+    public AvaliacaoFisicaForm create(AvaliacaoFisicaForm form) throws AlunoNotFoundException {
+        AvaliacaoFisica avaliacaoFisica = avaliacaoMapper.toModel(form);
 
-        avaliacaoFisica.setAluno(aluno);
-        avaliacaoFisica.setPeso(form.getPeso());
-        avaliacaoFisica.setAltura(form.getAltura());
+        Aluno alunoNoBanco = verifyIfAlunoExists(form.getAlunoId());
+        avaliacaoFisica.setAluno(alunoNoBanco);
 
-        return avaliacaoFisicaRepository.save(avaliacaoFisica);
+        AvaliacaoFisica avaliacaoSalva = avaliacaoFisicaRepository.save(avaliacaoFisica);
+        return avaliacaoMapper.toForm(avaliacaoSalva);
     }
 
     @Override
-    public AvaliacaoFisica get(Long id) {
-        Optional<AvaliacaoFisica> avaliacaoNoBD = avaliacaoFisicaRepository.findById(id);
-        if (avaliacaoNoBD.isPresent()) {
-
-            return avaliacaoNoBD.get();
-        }
-        return null;
+    public AvaliacaoFisicaForm get(Long id) throws AvaliacaoNotFoundException {
+        AvaliacaoFisica avaliacaoNoBanco = verifyIfExists(id);
+        return avaliacaoMapper.toForm(avaliacaoNoBanco);
     }
 
     @Override
-    public List<AvaliacaoFisica> getAll() {
+    public List<AvaliacaoFisicaForm> getAll() {
 
-        return avaliacaoFisicaRepository.findAll();
+        return avaliacaoFisicaRepository.findAll()
+                .stream()
+                .map(avaliacaoMapper::toForm)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public AvaliacaoFisica update(Long id, AvaliacaoFisicaUpdateForm formUpdate) {
-        Optional<AvaliacaoFisica> avaliacaoNoBD = avaliacaoFisicaRepository.findById(id);
-        if (avaliacaoNoBD.isPresent()) {
-            AvaliacaoFisica avaliacao = avaliacaoNoBD.get();
+    public AvaliacaoFisicaForm update(Long id, AvaliacaoFisicaUpdateForm formUpdate) throws AvaliacaoNotFoundException {
+
+        AvaliacaoFisica avaliacaoParaAtualizar = verifyIfExists(id);
             if (formUpdate.getAltura() != 0)
-                avaliacao.setAltura(formUpdate.getAltura());
+                avaliacaoParaAtualizar.setAltura(formUpdate.getAltura());
             if (formUpdate.getPeso() != 0)
-                avaliacao.setPeso(formUpdate.getPeso());
+                avaliacaoParaAtualizar.setPeso(formUpdate.getPeso());
 
-            return avaliacaoFisicaRepository.save(avaliacao);
-        }
-        return null;
+        AvaliacaoFisica avaliacaoSalva = avaliacaoFisicaRepository.save(avaliacaoParaAtualizar);
+        return avaliacaoMapper.toForm(avaliacaoSalva);
     }
 
     @Override
-    public void delete(Long id) {
-        Optional<AvaliacaoFisica> avaliacaoNoBanco = avaliacaoFisicaRepository.findById(id);
-        if (avaliacaoNoBanco.isPresent()) {
-            avaliacaoFisicaRepository.deleteById(id);
-        }
+    public void delete(Long id) throws AvaliacaoNotFoundException {
+        AvaliacaoFisica avaliacaoNoBanco = verifyIfExists(id);
+        avaliacaoFisicaRepository.delete(avaliacaoNoBanco);
+    }
+
+    private AvaliacaoFisica verifyIfExists(Long id) throws AvaliacaoNotFoundException {
+        return avaliacaoFisicaRepository.findById(id).orElseThrow(() -> new AvaliacaoNotFoundException(id));
+    }
+
+    private Aluno verifyIfAlunoExists(Long id) throws AlunoNotFoundException {
+        return alunoRepositoy.findById(id).orElseThrow(() -> new AlunoNotFoundException(id));
     }
 }

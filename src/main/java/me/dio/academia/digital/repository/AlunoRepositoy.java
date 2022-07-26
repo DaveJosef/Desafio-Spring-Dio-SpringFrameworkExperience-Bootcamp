@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AlunoRepositoy extends JpaRepository<Aluno, Long> {
@@ -15,5 +16,7 @@ public interface AlunoRepositoy extends JpaRepository<Aluno, Long> {
      * @return lista de todos os alunos que nasceram na data especificada como parâmetro.
      * */
     List<Aluno> findByDataDeNascimento(LocalDate dataDeNascimento);
+
+    Optional<Aluno> findByCpf(String cpf);
 
 }

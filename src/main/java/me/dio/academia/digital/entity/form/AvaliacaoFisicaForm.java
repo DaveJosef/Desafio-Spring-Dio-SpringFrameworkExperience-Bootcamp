@@ -13,6 +13,8 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class AvaliacaoFisicaForm {
 
+    private Long id;
+
     @Positive(message = "O Id do aluno precisa ser positivo.")
     private Long alunoId;
 
