@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
@@ -50,6 +51,9 @@ public class AvaliacaoFisicaServiceImpl implements IAvaliacaoFisicaService {
 
     @Override
     public void delete(Long id) {
-
+        Optional<AvaliacaoFisica> avaliacaoNoBanco = avaliacaoFisicaRepository.findById(id);
+        if (avaliacaoNoBanco.isPresent()) {
+            avaliacaoFisicaRepository.deleteById(id);
+        }
     }
 }

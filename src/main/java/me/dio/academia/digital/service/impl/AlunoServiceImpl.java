@@ -2,16 +2,17 @@ package me.dio.academia.digital.service.impl;
 
 import me.dio.academia.digital.entity.Aluno;
 import me.dio.academia.digital.entity.AvaliacaoFisica;
+import me.dio.academia.digital.entity.Matricula;
 import me.dio.academia.digital.entity.form.AlunoForm;
 import me.dio.academia.digital.entity.form.AlunoUpdateForm;
 import me.dio.academia.digital.infra.utils.JavaTimeUtils;
 import me.dio.academia.digital.repository.AlunoRepositoy;
+import me.dio.academia.digital.repository.MatriculaRepository;
 import me.dio.academia.digital.service.IAlunoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +21,8 @@ public class AlunoServiceImpl implements IAlunoService {
 
     @Autowired
     private AlunoRepositoy repositoy;
+    @Autowired
+    private MatriculaRepository matriculaRepository;
 
     @Override
     public Aluno create(AlunoForm form) {
@@ -34,6 +37,10 @@ public class AlunoServiceImpl implements IAlunoService {
 
     @Override
     public Aluno get(Long id) {
+        Optional<Aluno> alunoInDB = repositoy.findById(id);
+        if (alunoInDB.isPresent()) {
+            return alunoInDB.get();
+        }
         return null;
     }
 
@@ -51,22 +58,52 @@ public class AlunoServiceImpl implements IAlunoService {
 
     @Override
     public Aluno update(Long id, AlunoUpdateForm formUpdate) {
+        Optional<Aluno> alunoInDB = repositoy.findById(id);
+        if (alunoInDB.isPresent()) {
+            Aluno aluno = alunoInDB.get();
+            if (formUpdate.getNome() != null)
+                aluno.setNome(formUpdate.getNome());
+            if (formUpdate.getBairro() != null)
+                aluno.setBairro(formUpdate.getBairro());
+            if (formUpdate.getDataDeNascimento() != null)
+                aluno.setDataDeNascimento(formUpdate.getDataDeNascimento());
+
+            return repositoy.save(aluno);
+        }
         return null;
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(Long id) throws Exception {
+        verifyIfExists(id);
+        Optional<Matricula> matriculaDoAluno = matriculaRepository.findByAlunoId(id);
+        if (matriculaDoAluno.isPresent()) {
+            matriculaRepository.delete(matriculaDoAluno.get());
+        }
+    }
+
+    @Override
+    public List<AvaliacaoFisica> getAllAvaliacaoFisicaId(Long id) throws Exception {
+        verifyIfExists(id);
+        Optional<Aluno> alunoOptional = repositoy.findById(id);
+        return alunoOptional.get().getAvaliacoes();
 
     }
 
     @Override
-    public List<AvaliacaoFisica> getAllAvaliacaoFisicaId(Long id) {
-
-        Optional<Aluno> alunoOptional = repositoy.findById(id);
-        if (alunoOptional.isPresent()) {
-            return alunoOptional.get().getAvaliacoes();
+    public Matricula getMatriculaId(Long id) throws Exception {
+        verifyIfExists(id);
+        Optional<Matricula> matriculaDoAluno = matriculaRepository.findByAlunoId(id);
+        if (matriculaDoAluno.isPresent()) {
+            return matriculaDoAluno.get();
         }
-        return Collections.EMPTY_LIST;
+        return null;
+    }
 
+    private void verifyIfExists(Long id) throws Exception {
+        Optional<Aluno> alunoInDB = repositoy.findById(id);
+        if (!alunoInDB.isPresent()) {
+            throw new Exception("Aluno not found :/");
+        }
     }
 }
